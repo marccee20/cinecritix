@@ -96,8 +96,78 @@ $resultado = $conexion->query("SELECT COUNT(*) as total FROM peliculas");
 $row = $resultado->fetch_assoc();
 
 if ($row['total'] == 0) {
-    echo "<p>Insertando datos de ejemplo...</p>";
-    echo "✓ Estructura lista. Ahora puedes insertar películas desde la aplicación.<br>";
+    echo "<p>Insertando películas de ejemplo...</p>";
+    
+    // Películas de ejemplo con imágenes BLOB desde archivos locales
+    $peliculas = [
+        [
+            'nombre' => 'Deadpool',
+            'genero' => 'Acción, Comedia',
+            'duracion' => 108,
+            'fecha_estreno' => '2016-02-12',
+            'descripcion' => 'Un ex soldado toma venganza contra el hombre que lo dejó desfigurado.',
+            'archivo' => 'deadpool.webp'
+        ],
+        [
+            'nombre' => 'Alien',
+            'genero' => 'Ciencia Ficción, Terror',
+            'duracion' => 117,
+            'fecha_estreno' => '1979-05-25',
+            'descripcion' => 'La tripulación de un comerciante espacial se enfrenta a una criatura alienígena letal.',
+            'archivo' => 'alien.jpg'
+        ],
+        [
+            'nombre' => 'Lilo y Stitch Live Action',
+            'genero' => 'Familia, Aventura',
+            'duracion' => 120,
+            'fecha_estreno' => '2025-01-01',
+            'descripcion' => 'Una chica hawaiana adopta a una criatura extraña que resulta ser un clon alienígena.',
+            'archivo' => 'LILO-Y-STITCH-LIVE-ACTION.jpg'
+        ],
+        [
+            'nombre' => 'El Planeta de los Simios',
+            'genero' => 'Ciencia Ficción',
+            'duracion' => 112,
+            'fecha_estreno' => '1968-04-03',
+            'descripcion' => 'Un astronauta aterriza en un planeta donde los simios han evolucionado.',
+            'archivo' => 'planetadesimios.avif'
+        ]
+    ];
+    
+    $insertadas = 0;
+    foreach ($peliculas as $peli) {
+        $archivo = 'imagenes/' . $peli['archivo'];
+        if (file_exists($archivo)) {
+            $imagen_blob = file_get_contents($archivo);
+            
+            $stmt = $conexion->prepare(
+                "INSERT INTO peliculas (nombre, genero, duracion, fecha_estreno, descripcion, imagen) 
+                 VALUES (?, ?, ?, ?, ?, ?)"
+            );
+            
+            $stmt->bind_param(
+                'ssisss',
+                $peli['nombre'],
+                $peli['genero'],
+                $peli['duracion'],
+                $peli['fecha_estreno'],
+                $peli['descripcion'],
+                $imagen_blob
+            );
+            
+            if ($stmt->execute()) {
+                echo "✓ Insertada: " . $peli['nombre'] . "<br>";
+                $insertadas++;
+            } else {
+                echo "✗ Error insertando " . $peli['nombre'] . ": " . $stmt->error . "<br>";
+            }
+            $stmt->close();
+        } else {
+            echo "⚠ Archivo no encontrado: $archivo<br>";
+        }
+    }
+    
+    echo "<p>Películas insertadas: <strong>$insertadas</strong></p>";
 } else {
     echo "✓ Base de datos ya contiene " . $row['total'] . " películas<br>";
 }
