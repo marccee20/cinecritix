@@ -1,5 +1,3 @@
-/* === ESTILO TIPO LETTERBOXD === */
-
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
@@ -42,7 +40,7 @@ body {
   color: white;
 }
 
-/* --- SECCIÓN DE DETALLES --- */
+
 .detalles {
   display: flex;
   align-items: flex-start;
@@ -57,7 +55,7 @@ body {
   box-shadow: 0 0 40px rgba(226, 233, 229, 0.863);
 }
 
-/* --- IMAGEN --- */
+
 .detalles img {
   width: 300px;
   height: auto;
@@ -65,7 +63,7 @@ body {
   box-shadow: 0 0 25px rgba(226, 233, 229, 0.863);
 }
 
-/* --- INFORMACIÓN --- */
+
 .detalles .info {
   flex: 1;
 }
@@ -229,7 +227,7 @@ footer{
   color: #f5c518;
 }
 
-/* Etiqueta "Tu valoración:" */
+
 .valoracion-label {
   display: block;
   font-weight: 600;
@@ -239,7 +237,7 @@ footer{
   letter-spacing: 0.5px;
 }
 
-/* Mostrar estrellas en comentarios */
+/* muestra estrellas en comentarios */
 .valoracion {
   display: inline-flex;
   gap: 3px;
@@ -251,7 +249,7 @@ footer{
   font-size: 1rem;
 }
 
-/* Ajuste visual del bloque de comentario */
+
 .comentario-header {
   display: flex;
   align-items: center;
@@ -259,9 +257,6 @@ footer{
   flex-wrap: wrap;
 }
 
-/* ==========================
-   SUBCOMENTARIOS / RESPUESTAS
-=========================== */
 
 .lista-comentarios .respuestas {
   margin-left: 30px; /* Indentado para diferenciar de comentario principal */
@@ -287,13 +282,11 @@ footer{
   margin-left: 5px;
 }
 
-/* ==========================
-   FORMULARIO DE RESPUESTA OCULTO
-=========================== */
+
 
 .form-respuesta {
   margin-top: 10px;
-  display: none; /* Oculto por defecto */
+  display: none; /* Oculto */
 }
 
 .form-respuesta textarea {
@@ -318,9 +311,7 @@ footer{
   font-size: 0.9rem;
 }
 
-/* ==========================
-   BOTÓN "RESPONDER"
-=========================== */
+
 
 .comentario .btn-responder {
   background: transparent;
