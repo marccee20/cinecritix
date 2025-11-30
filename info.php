@@ -1,9 +1,7 @@
-<?php
-
-// Conexión y obtención de datos
-
-include("conexion.php");
 session_start(); // Para identificar usuario logueado
+<?php
+// Conexión y obtención de datos
+require_once __DIR__ . '/conexion.php';
 
 if (isset($_GET['id'])) {
     $id = intval($_GET['id']);
@@ -19,41 +17,20 @@ if (isset($_GET['id'])) {
     echo "ID no especificado.";
     exit;
 }
+
+$search_value = '';
+$page_title = isset($pelicula['nombre']) ? $pelicula['nombre'] : 'Información';
+$extra_head = '<link rel="stylesheet" href="css/informacion.css?v=6">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" crossorigin="anonymous" />';
+include __DIR__ . '/includes/header.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title><?php echo htmlspecialchars($pelicula['nombre']); ?></title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" crossorigin="anonymous" />
-<link rel="stylesheet" href="css/informacion.css?v=6">
-</head>
-<body>
-
-<!-- nav -->
-<nav class="navbar">
-        <div class="container">
-          <a href="index.php" class="navbar-brand">cinecritx</a>
-          <div class="navbar-nav">
-            <?php if (isset($_SESSION['usuario'])): ?>
-              <!-- Si el usuario está logueado -->
-              <a href=""><?php echo htmlspecialchars($_SESSION['usuario']); ?></a>
-              <a href="logout.php">Cerrar sesión</a>
-              <a href="#peliculas">Películas</a>
-            <?php else: ?>
-              <!-- Si el usuario NO está logueado -->
-              <a href="login.php">Iniciar sesión</a>
-              <a href="cuenta.php">Crear cuenta</a>
-              <a href="#peliculas">Películas</a>
-            <?php endif; ?>
-          </div>
-        </div>
-      </nav>
 
 <!-- info peli -->
 <div class="detalles">
-    <img src="data:image/jpeg;base64,<?php echo base64_encode($pelicula['imagen']); ?>" alt="<?php echo htmlspecialchars($pelicula['nombre']); ?>">
+    <?php if (!empty($pelicula['imagen_path'])): ?>
+        <img src="<?php echo htmlspecialchars($pelicula['imagen_path']); ?>" alt="<?php echo htmlspecialchars($pelicula['nombre']); ?>">
+    <?php else: ?>
+        <img src="data:image/jpeg;base64,<?php echo base64_encode($pelicula['imagen']); ?>" alt="<?php echo htmlspecialchars($pelicula['nombre']); ?>">
+    <?php endif; ?>
     <div class="info">
         <h1><?php echo htmlspecialchars($pelicula['nombre']); ?></h1>
         <div class="meta">
@@ -72,7 +49,6 @@ if (isset($_GET['id'])) {
     <h2>Opiniones de los usuarios</h2>
 
     <?php
-    
     if (isset($_SESSION['id_usuarios'])) {
     ?>
         <form action="guardar_comentario.php" method="POST" class="form-comentario">
@@ -94,12 +70,10 @@ if (isset($_GET['id'])) {
     ?>
 
     <?php
-    
     // funcion para mostrar comentarios anidados 
     function mostrar_comentarios($conexion, $id_pelicula, $id_padre = null, $nivel = 0) {
         $id_pelicula = intval($id_pelicula);
 
-        
         if ($nivel === 0) {
             // Trae comentarios principales y la posible puntuación del autor
             $query = "SELECT c.id, c.comentario, c.fecha, c.id_usuarios, u.usuario, v.puntuacion
@@ -151,7 +125,6 @@ if (isset($_GET['id'])) {
                           </form>';
                 }
 
-                
                 mostrar_comentarios($conexion, $id_pelicula, $fila['id'], $nivel + 1);
 
                 echo "</div>"; 
@@ -161,22 +134,13 @@ if (isset($_GET['id'])) {
         }
     }
 
-   
-    
     echo "<div class='lista-comentarios'>";
     mostrar_comentarios($conexion, $pelicula['id_peliculas']);
     echo "</div>";
     ?>
 </div>
 
-<footer>
-    <div class="social-links">
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-    </div>
-    <span>cinecritx</span>
-</footer>
+<?php include __DIR__ . '/includes/footer.php'; ?>
 
 <script>
 //muestra o oculta textarea 
@@ -192,6 +156,3 @@ document.querySelectorAll('.btn-responder').forEach(btn => {
     });
 });
 </script>
-
-</body>
-</html>

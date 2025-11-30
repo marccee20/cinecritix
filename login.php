@@ -1,39 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio de sesión</title>
-    <link rel="stylesheet" href="css/login.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-</head>
-<body>
-    
-    <!-- Barra de navegacion -->
-<nav class="navbar">
-    <a href="index.php">cinecritix</a>
-    <ul class="nav-links">
-        <li><a href="login.php">INICIAR SESION</a></li>
-        <li><a href="cuenta.php">CREAR UNA CUENTA</a></li>
-        
-    </ul>
-</nav>
+<?php
+// Procesar login antes de enviar cualquier salida
+require_once __DIR__ . '/conexion.php';
 
-
-    <div class="wrapper">
-        <form method="POST">
-            <h1>Inicio de sesión</h1>
-            <?php
-include("conexion.php");
-
+$login_error = '';
 if (isset($_POST['btningresar'])) {
     $usuario = trim($_POST['usuario']);
     $password = trim($_POST['password']);
 
     if (empty($usuario) || empty($password)) {
-        echo "<p style='color:red;'>Por favor complete todos los campos.</p>";
+        $login_error = "Por favor complete todos los campos.";
     } else {
-        
         $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE usuario = ?");
         $stmt->bind_param("s", $usuario);
         $stmt->execute();
@@ -43,34 +19,39 @@ if (isset($_POST['btningresar'])) {
             $row = $resultado->fetch_assoc();
             $hashGuardado = $row['contraseña'];
 
-            
             if (password_verify($password, $hashGuardado)) {
-                session_start();
-                $_SESSION['id_usuarios'] = $row['id_usuarios']; 
-                $_SESSION['usuario'] = $row['usuario'];         
+                if (session_status() == PHP_SESSION_NONE) session_start();
+                $_SESSION['id_usuarios'] = $row['id_usuarios'];
+                $_SESSION['usuario'] = $row['usuario'];
                 header("Location: index.php");
                 exit();
-
-
             } else {
-                echo "<p style='color:red;'>Contraseña incorrecta.</p>";
+                $login_error = "Contraseña incorrecta.";
             }
         } else {
-            echo "<p style='color:red;'>Usuario no encontrado.</p>";
+            $login_error = "Usuario no encontrado.";
         }
 
         $stmt->close();
     }
 }
+
+$search_value = '';
+$page_title = 'Inicio de sesión';
+$extra_head = '<link rel="stylesheet" href="css/login.css">\n<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">';
+include __DIR__ . '/includes/header.php';
 ?>
+
+    <div class="wrapper">
+        <form method="POST">
+            <h1>Inicio de sesión</h1>
+            <?php if (!empty($login_error)) echo "<p style='color:red;'>" . htmlspecialchars($login_error) . "</p>"; ?>
 
             <div class="input-box">
                 <input id="usuario" name="usuario" type="text" placeholder="Usuario" required>
-                
             </div>
             <div class="input-box">
                 <input name="password" type="password" placeholder="Contraseña" required>
-                
             </div>
 
             <div class="remember-forgot">
@@ -85,5 +66,5 @@ if (isset($_POST['btningresar'])) {
             </div>
         </form>
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/includes/footer.php'; ?>

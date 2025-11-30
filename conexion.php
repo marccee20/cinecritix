@@ -1,13 +1,6 @@
 <?php
+// Mantener compatibilidad: incluir el nuevo `includes/db.php`
+require_once __DIR__ . '/includes/db.php';
 
-$server = 'localhost';
-$user = 'root';
-$pass ='';
-$db = 'peliculas_proyecto';
-
-$conexion = new  mysqli($server, $user, $pass, $db);
-if($conexion->connect_errno){
-    die("error de conexion:" . $conexion->connect_errno);
-}
-
+// Ahora $conexion está definido por includes/db.php
 ?>
