@@ -106,6 +106,8 @@ if ($row['total'] == 0) {
             'duracion' => 108,
             'fecha_estreno' => '2016-02-12',
             'descripcion' => 'Un ex soldado toma venganza contra el hombre que lo dejó desfigurado.',
+            'pais' => 'USA',
+            'idioma' => 'Inglés',
             'archivo' => 'deadpool.webp'
         ],
         [
@@ -114,6 +116,8 @@ if ($row['total'] == 0) {
             'duracion' => 117,
             'fecha_estreno' => '1979-05-25',
             'descripcion' => 'La tripulación de un comerciante espacial se enfrenta a una criatura alienígena letal.',
+            'pais' => 'USA',
+            'idioma' => 'Inglés',
             'archivo' => 'alien.jpg'
         ],
         [
@@ -122,6 +126,8 @@ if ($row['total'] == 0) {
             'duracion' => 120,
             'fecha_estreno' => '2025-01-01',
             'descripcion' => 'Una chica hawaiana adopta a una criatura extraña que resulta ser un clon alienígena.',
+            'pais' => 'USA',
+            'idioma' => 'Inglés',
             'archivo' => 'LILO-Y-STITCH-LIVE-ACTION.jpg'
         ],
         [
@@ -130,6 +136,8 @@ if ($row['total'] == 0) {
             'duracion' => 112,
             'fecha_estreno' => '1968-04-03',
             'descripcion' => 'Un astronauta aterriza en un planeta donde los simios han evolucionado.',
+            'pais' => 'USA',
+            'idioma' => 'Inglés',
             'archivo' => 'planetadesimios.avif'
         ]
     ];
@@ -141,18 +149,20 @@ if ($row['total'] == 0) {
             $imagen_blob = file_get_contents($archivo);
             
             $stmt = $conexion->prepare(
-                "INSERT INTO peliculas (nombre, genero, duracion, fecha_estreno, descripcion, imagen) 
-                 VALUES (?, ?, ?, ?, ?, ?)"
+                "INSERT INTO peliculas (nombre, genero, duracion, `fecha-estreno`, descripcion, imagen, pais, idioma) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
             );
             
             $stmt->bind_param(
-                'ssisss',
+                'ssisssss',
                 $peli['nombre'],
                 $peli['genero'],
                 $peli['duracion'],
                 $peli['fecha_estreno'],
                 $peli['descripcion'],
-                $imagen_blob
+                $imagen_blob,
+                $peli['pais'],
+                $peli['idioma']
             );
             
             if ($stmt->execute()) {

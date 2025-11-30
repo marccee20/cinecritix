@@ -14,6 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $duracion = isset($_POST['duracion']) ? (int)$_POST['duracion'] : 0;
     $fecha_estreno = isset($_POST['fecha_estreno']) ? trim($_POST['fecha_estreno']) : '';
     $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+    $pais = isset($_POST['pais']) ? trim($_POST['pais']) : '';
+    $idioma = isset($_POST['idioma']) ? trim($_POST['idioma']) : '';
     
     // Procesar imagen
     $imagen_blob = null;
@@ -23,18 +25,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (!empty($nombre) && $imagen_blob) {
         $stmt = $conexion->prepare(
-            "INSERT INTO peliculas (nombre, genero, duracion, fecha_estreno, descripcion, imagen) 
-             VALUES (?, ?, ?, ?, ?, ?)"
+            "INSERT INTO peliculas (nombre, genero, duracion, `fecha-estreno`, descripcion, imagen, pais, idioma) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         );
         
         $stmt->bind_param(
-            'ssisss',
+            'ssisssss',
             $nombre,
             $genero,
             $duracion,
             $fecha_estreno,
             $descripcion,
-            $imagen_blob
+            $imagen_blob,
+            $pais,
+            $idioma
         );
         
         if ($stmt->execute()) {
@@ -140,6 +144,16 @@ $peliculas = $resultado->fetch_all(MYSQLI_ASSOC);
                 <div class="form-group">
                     <label>Fecha de estreno</label>
                     <input type="date" name="fecha_estreno">
+                </div>
+                
+                <div class="form-group">
+                    <label>País</label>
+                    <input type="text" name="pais" placeholder="Ej: USA, México">
+                </div>
+                
+                <div class="form-group">
+                    <label>Idioma</label>
+                    <input type="text" name="idioma" placeholder="Ej: Español, Inglés">
                 </div>
                 
                 <div class="form-group">
