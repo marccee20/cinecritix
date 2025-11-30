@@ -1,0 +1,357 @@
+/* === ESTILO TIPO LETTERBOXD === */
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #0d0d0d;
+  color: #e5e5e5;
+}
+
+/* --- NAVBAR --- */
+.navbar {
+  background: #141414;
+  padding: 15px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.navbar .container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.navbar-nav a {
+  color: #f1f1f1;
+  text-decoration: none;
+  margin-left: 20px;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav a:hover {
+  color: white;
+}
+
+/* --- SECCIÓN DE DETALLES --- */
+.detalles {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 90%;
+  max-width: 1100px;
+  margin: 50px auto;
+  gap: 40px;
+  background: linear-gradient(145deg, #121212, #1a1a1a);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 0 40px rgba(226, 233, 229, 0.863);
+}
+
+/* --- IMAGEN --- */
+.detalles img {
+  width: 300px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(226, 233, 229, 0.863);
+}
+
+/* --- INFORMACIÓN --- */
+.detalles .info {
+  flex: 1;
+}
+
+.detalles h1 {
+  margin: 0;
+  font-size: 2.3rem;
+  color: white;
+  font-weight: 600;
+}
+
+.detalles .meta {
+  font-size: 1rem;
+  color: #bbb;
+  margin: 10px 0 20px 0;
+}
+
+.detalles .meta span {
+  margin-right: 15px;
+}
+
+.detalles .descripcion {
+  line-height: 1.6;
+  color: #ddd;
+  font-size: 1.05rem;
+  margin-top: 15px;
+  border-top: 1px solid #333;
+  padding-top: 15px;
+}
+
+.comentarios-section {
+  margin: 40px auto;
+  width: 80%;
+  background: #111;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+
+.comentarios-section h2 {
+  color: #fff;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+}
+
+.form-comentario textarea {
+  width: 100%;
+  height: 100px;
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  resize: none;
+}
+
+.form-comentario button {
+  background: #ff0040;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.lista-comentarios .comentario {
+  background: #1a1a1a;
+  margin-top: 15px;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.comentario strong {
+  color: #ff0040;
+}
+
+.comentario .fecha {
+  color: #aaa;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.sin-comentarios {
+  color: #ccc;
+  font-style: italic;
+  margin-top: 10px;
+}
+
+.aviso-login a {
+  color: #ff0040;
+  text-decoration: none;
+}
+
+footer{
+    background: #333333;
+    color: #fff;
+    text-align: center;
+    padding: 2rem 0;
+}
+.social-links{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.4rem;
+}
+.social-links a{
+    border: 2px solid #fff;
+    color: #fff;
+    display: block;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    text-decoration: none;
+    margin: 0 0.3rem;
+    transition: all 0.5s ease;
+}
+.social-links a:hover{
+    background: #fff;
+    color: var(--exDark);
+}
+.footer span{
+    margin-top: 1rem;
+    display: block;
+    font-family: var(--Playfair);
+    letter-spacing: 2px;
+}
+
+.estrellas-input {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.estrellas-input input {
+  display: none;
+}
+
+/* Estilo base de las estrellas */
+.estrellas-input label i {
+  font-size: 1rem;
+  color: #444;
+  transition: color 0.3s, transform 0.2s;
+}
+
+/* Efecto hover (al pasar el mouse) */
+.estrellas-input label:hover i,
+.estrellas-input label:hover ~ label i {
+  color: #f5c518;
+  transform: scale(1.1);
+}
+
+/* Cuando una estrella está seleccionada */
+.estrellas-input input:checked ~ label i {
+  color: #f5c518;
+}
+
+/* Etiqueta "Tu valoración:" */
+.valoracion-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #ff0040;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+/* Mostrar estrellas en comentarios */
+.valoracion {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 10px;
+}
+
+.valoracion i {
+  color: #f5c518;
+  font-size: 1rem;
+}
+
+/* Ajuste visual del bloque de comentario */
+.comentario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* ==========================
+   SUBCOMENTARIOS / RESPUESTAS
+=========================== */
+
+.lista-comentarios .respuestas {
+  margin-left: 30px; /* Indentado para diferenciar de comentario principal */
+  margin-top: 10px;
+  border-left: 2px solid #ff0040; /* Línea de guía para subcomentario */
+  padding-left: 15px;
+}
+
+.subcomentario {
+  background: #222;
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+}
+
+.subcomentario strong {
+  color: #ff0040;
+}
+
+.subcomentario .fecha {
+  color: #aaa;
+  font-size: 11px;
+  margin-left: 5px;
+}
+
+/* ==========================
+   FORMULARIO DE RESPUESTA OCULTO
+=========================== */
+
+.form-respuesta {
+  margin-top: 10px;
+  display: none; /* Oculto por defecto */
+}
+
+.form-respuesta textarea {
+  width: 100%;
+  height: 70px;
+  background: #222;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 6px;
+  resize: none;
+}
+
+.form-respuesta button {
+  background: #ff0040;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+/* ==========================
+   BOTÓN "RESPONDER"
+=========================== */
+
+.comentario .btn-responder {
+  background: transparent;
+  color: #ff0040;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 5px;
+  padding: 0;
+  transition: color 0.3s;
+}
+
+.comentario .btn-responder:hover {
+  color: #ff77aa;
+}
+
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .detalles {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .detalles img {
+    width: 80%;
+    max-width: 320px;
+  }
+
+  .detalles .info {
+    width: 100%;
+  }
+}
