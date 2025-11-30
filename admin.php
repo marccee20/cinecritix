@@ -123,6 +123,12 @@ $peliculas = $resultado->fetch_all(MYSQLI_ASSOC);
         
         <?php echo $mensaje; ?>
         
+        <div style="margin-bottom: 20px; text-align: right;">
+            <a href="sync_data.php" style="background: #28a745; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; display: inline-block;">
+                🔄 Sincronizar Datos
+            </a>
+        </div>
+        
         <div class="form-section">
             <h2>Agregar Nueva Película</h2>
             <form method="POST" enctype="multipart/form-data">
