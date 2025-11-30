@@ -197,12 +197,15 @@ header{
     font-family: var(--Playfair);
 }
 
+
+
 .blog-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 32px;
   justify-content: center;
   align-items: start;
+  padding: 0 20px;
 }
 
 .blog-item {
@@ -331,4 +334,5 @@ footer{
         margin-top: 22.4px;
         width: 80%;
         margin-left: auto;
-        margin-right: auto
+        margin-right: auto}
+    }

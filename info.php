@@ -1,7 +1,7 @@
 <?php
-// ======================================
+
 // Conexión y obtención de datos
-// ======================================
+
 include("conexion.php");
 session_start(); // Para identificar usuario logueado
 
@@ -31,19 +31,27 @@ if (isset($_GET['id'])) {
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- nav -->
 <nav class="navbar">
-    <div class="container">
-        <a href="index.php" class="navbar-brand">cinecritx</a>
-        <div class="navbar-nav">
-            <a href="login.php">iniciar sesión</a>
-            <a href="cuenta.php">crear cuenta</a>
-            <a href="#peliculas">películas</a>
+        <div class="container">
+          <a href="index.php" class="navbar-brand">cinecritx</a>
+          <div class="navbar-nav">
+            <?php if (isset($_SESSION['usuario'])): ?>
+              <!-- Si el usuario está logueado -->
+              <a href=""><?php echo htmlspecialchars($_SESSION['usuario']); ?></a>
+              <a href="logout.php">Cerrar sesión</a>
+              <a href="#peliculas">Películas</a>
+            <?php else: ?>
+              <!-- Si el usuario NO está logueado -->
+              <a href="login.php">Iniciar sesión</a>
+              <a href="cuenta.php">Crear cuenta</a>
+              <a href="#peliculas">Películas</a>
+            <?php endif; ?>
+          </div>
         </div>
-    </div>
-</nav>
+      </nav>
 
-<!-- DETALLES DE LA PELÍCULA -->
+<!-- info peli -->
 <div class="detalles">
     <img src="data:image/jpeg;base64,<?php echo base64_encode($pelicula['imagen']); ?>" alt="<?php echo htmlspecialchars($pelicula['nombre']); ?>">
     <div class="info">
@@ -57,14 +65,14 @@ if (isset($_GET['id'])) {
     </div>
 </div>
 
-<!-- =============================== -->
-<!-- SECCIÓN DE OPINIONES DE USUARIOS -->
-<!-- =============================== -->
+
+<!-- seccion comentario -->
+
 <div class="comentarios-section">
     <h2>Opiniones de los usuarios</h2>
 
     <?php
-    // Si el usuario está logueado, mostrar formulario principal
+    
     if (isset($_SESSION['id_usuarios'])) {
     ?>
         <form action="guardar_comentario.php" method="POST" class="form-comentario">
@@ -86,16 +94,14 @@ if (isset($_GET['id'])) {
     ?>
 
     <?php
-    // ===============================
-    // FUNCIÓN RECURSIVA PARA MOSTRAR COMENTARIOS ANIDADOS
-    // ===============================
+    
+    // funcion para mostrar comentarios anidados 
     function mostrar_comentarios($conexion, $id_pelicula, $id_padre = null, $nivel = 0) {
         $id_pelicula = intval($id_pelicula);
 
-        // NOTA: obtenemos la puntuación solo si queremos mostrarla en nivel 0.
-        // Para evitar joins innecesarios en niveles > 0, usamos una consulta diferente según el nivel.
+        
         if ($nivel === 0) {
-            // Trae comentarios principales y la posible puntuación del autor (si existe)
+            // Trae comentarios principales y la posible puntuación del autor
             $query = "SELECT c.id, c.comentario, c.fecha, c.id_usuarios, u.usuario, v.puntuacion
                       FROM comentarios c
                       JOIN usuarios u ON c.id_usuarios = u.id_usuarios
@@ -122,7 +128,7 @@ if (isset($_GET['id'])) {
                 echo "<strong>" . htmlspecialchars($fila['usuario']) . "</strong>";
                 echo "<span class='fecha'> (" . $fila['fecha'] . ")</span>";
 
-                // Mostrar estrellas SOLO si estamos en nivel 0 y existe puntuación
+                // Mostrar estrellas solo si estamos en nivel 0 y existe puntuación
                 if ($nivel === 0 && !empty($fila['puntuacion'])) {
                     echo "<span class='valoracion'>";
                     for ($i = 1; $i <= 5; $i++) {
@@ -145,20 +151,18 @@ if (isset($_GET['id'])) {
                           </form>';
                 }
 
-                // Llamada recursiva para mostrar respuestas de este comentario
-                // Si $nivel === 0 pasamos $fila['id'] como id_padre; si nivel>0 la consulta ya filtra por id_padre.
+                
                 mostrar_comentarios($conexion, $id_pelicula, $fila['id'], $nivel + 1);
 
-                echo "</div>"; // cierre comentario
+                echo "</div>"; 
             }
 
-            echo "</div>"; // cierre nivel
+            echo "</div>"; 
         }
     }
 
-    // ===============================
-    // MOSTRAR COMENTARIOS DE LA PELÍCULA
-    // ===============================
+   
+    
     echo "<div class='lista-comentarios'>";
     mostrar_comentarios($conexion, $pelicula['id_peliculas']);
     echo "</div>";
@@ -170,17 +174,16 @@ if (isset($_GET['id'])) {
         <a href="#"><i class="fab fa-facebook-f"></i></a>
         <a href="#"><i class="fab fa-twitter"></i></a>
         <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-pinterest"></i></a>
     </div>
     <span>cinecritx</span>
 </footer>
 
 <script>
-// Mostrar/ocultar textarea al presionar "Responder"
+//muestra o oculta textarea 
 document.querySelectorAll('.btn-responder').forEach(btn => {
     btn.addEventListener('click', () => {
         const form = btn.nextElementSibling;
-        // Si el form está inline en el DOM y oculto por CSS, lo alternamos.
+        
         form.style.display = (form.style.display === "block") ? "none" : "block";
         if (form.style.display === "block") {
             const ta = form.querySelector('textarea');

@@ -9,7 +9,7 @@
 </head>
 <body>
     
-    <!-- Barra de navegación -->
+    <!-- Barra de navegacion -->
 <nav class="navbar">
     <a href="index.php">cinecritix</a>
     <ul class="nav-links">
@@ -33,7 +33,7 @@ if (isset($_POST['btningresar'])) {
     if (empty($usuario) || empty($password)) {
         echo "<p style='color:red;'>Por favor complete todos los campos.</p>";
     } else {
-        // Buscar solo el usuario
+        
         $stmt = $conexion->prepare("SELECT * FROM usuarios WHERE usuario = ?");
         $stmt->bind_param("s", $usuario);
         $stmt->execute();
@@ -43,11 +43,11 @@ if (isset($_POST['btningresar'])) {
             $row = $resultado->fetch_assoc();
             $hashGuardado = $row['contraseña'];
 
-            // Aquí sí usas password_verify
+            
             if (password_verify($password, $hashGuardado)) {
                 session_start();
-                $_SESSION['id_usuarios'] = $row['id_usuarios']; // ← agrega el ID del usuario
-                $_SESSION['usuario'] = $row['usuario'];         // guardá también el nombre
+                $_SESSION['id_usuarios'] = $row['id_usuarios']; 
+                $_SESSION['usuario'] = $row['usuario'];         
                 header("Location: index.php");
                 exit();
 

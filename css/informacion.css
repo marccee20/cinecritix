@@ -45,19 +45,18 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 90%;
-  max-width: 1100px;
-  margin: 50px auto;
+  width: 80%;
+  margin: 10px auto;
   gap: 40px;
   background: linear-gradient(145deg, #121212, #1a1a1a);
   border-radius: 12px;
   padding: 40px;
-  box-shadow: 0 0 40px rgba(226, 233, 229, 0.863);
+ box-shadow: 0 0 15px rgba(255,255,255,0.1);
 }
 
 
 .detalles img {
-  width: 300px;
+  width: 100px;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 0 25px rgba(226, 233, 229, 0.863);
