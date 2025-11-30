@@ -1,0 +1,40 @@
+# Archivos de Sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# PHP
+*.log
+.env
+.env.local
+
+# XAMPP Local
+config/
+
+# Node (si se usa)
+node_modules/
+package-lock.json
+
+# Archivos temporales
+*.tmp
+*.temp
+/tmp/
+
+# Archivos de IDE
+.vscode/
+.sublime-project
+.sublime-workspace
+*.sublime-workspace
+
+# Cache
+.cache/
+*.cache
+
+# Desarrollo local
+local_config.php
+test_*.php
+debug_*.php
