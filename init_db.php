@@ -43,6 +43,7 @@ $sql_tabla = "CREATE TABLE IF NOT EXISTS peliculas (
     id_peliculas INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     genero VARCHAR(100),
+    director VARCHAR(255),
     duracion INT,
     fecha_estreno DATE,
     descripcion LONGTEXT,
@@ -99,10 +100,11 @@ if ($row['total'] == 0) {
     echo "<p>Insertando películas de ejemplo...</p>";
     
     // Películas de ejemplo con imágenes BLOB desde archivos locales
-    $peliculas = [
+        $peliculas = [
         [
             'nombre' => 'Deadpool',
             'genero' => 'Acción, Comedia',
+                'director' => 'Tim Miller',
             'duracion' => 108,
             'fecha_estreno' => '2016-02-12',
             'descripcion' => 'Un ex soldado toma venganza contra el hombre que lo dejó desfigurado.',
@@ -113,6 +115,7 @@ if ($row['total'] == 0) {
         [
             'nombre' => 'Alien',
             'genero' => 'Ciencia Ficción, Terror',
+                'director' => 'Ridley Scott',
             'duracion' => 117,
             'fecha_estreno' => '1979-05-25',
             'descripcion' => 'La tripulación de un comerciante espacial se enfrenta a una criatura alienígena letal.',
@@ -123,6 +126,7 @@ if ($row['total'] == 0) {
         [
             'nombre' => 'Lilo y Stitch Live Action',
             'genero' => 'Familia, Aventura',
+                'director' => 'Filmmaker Ejemplo',
             'duracion' => 120,
             'fecha_estreno' => '2025-01-01',
             'descripcion' => 'Una chica hawaiana adopta a una criatura extraña que resulta ser un clon alienígena.',
@@ -133,6 +137,7 @@ if ($row['total'] == 0) {
         [
             'nombre' => 'El Planeta de los Simios',
             'genero' => 'Ciencia Ficción',
+                'director' => 'Franklin J. Schaffner',
             'duracion' => 112,
             'fecha_estreno' => '1968-04-03',
             'descripcion' => 'Un astronauta aterriza en un planeta donde los simios han evolucionado.',
@@ -149,17 +154,18 @@ if ($row['total'] == 0) {
             $imagen_blob = file_get_contents($archivo);
             
             $stmt = $conexion->prepare(
-                "INSERT INTO peliculas (nombre, genero, duracion, `fecha-estreno`, descripcion, imagen, pais, idioma) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                "INSERT INTO peliculas (nombre, genero, duracion, `fecha_estreno`, descripcion, director, imagen, pais, idioma) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
             
             $stmt->bind_param(
-                'ssisssss',
+                'ssissssss',
                 $peli['nombre'],
                 $peli['genero'],
                 $peli['duracion'],
                 $peli['fecha_estreno'],
                 $peli['descripcion'],
+                $peli['director'],
                 $imagen_blob,
                 $peli['pais'],
                 $peli['idioma']

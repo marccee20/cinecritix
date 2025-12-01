@@ -85,7 +85,7 @@ $accion = isset($_GET['action']) ? $_GET['action'] : '';
 
 // EXPORTAR
 if ($accion === 'export') {
-    $sql = "SELECT id_peliculas, nombre, genero, duracion, `fecha-estreno`, descripcion, pais, idioma, imagen FROM peliculas";
+    $sql = "SELECT id_peliculas, nombre, genero, duracion, `fecha_estreno`, descripcion, director, pais, idioma, imagen FROM peliculas";
     $resultado = $conexion->query($sql);
     
     $peliculas = [];
@@ -119,19 +119,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['archivo_json'])) {
             $imagen_blob = base64_decode($peli['imagen']);
             
             $stmt = $conexion->prepare(
-                "INSERT INTO peliculas (nombre, genero, duracion, `fecha-estreno`, descripcion, imagen, pais, idioma) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                 ON DUPLICATE KEY UPDATE imagen=VALUES(imagen)"
+                 "INSERT INTO peliculas (nombre, genero, duracion, `fecha_estreno`, descripcion, director, imagen, pais, idioma) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE imagen=VALUES(imagen), director=VALUES(director)"
             );
             
             if ($stmt) {
                 $stmt->bind_param(
-                    'ssisssss',
+                    'ssissssss',
                     $peli['nombre'],
                     $peli['genero'],
                     $peli['duracion'],
-                    $peli['fecha-estreno'],
+                    $peli['fecha_estreno'],
                     $peli['descripcion'],
+                    $peli['director'],
                     $imagen_blob,
                     $peli['pais'],
                     $peli['idioma']

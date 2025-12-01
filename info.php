@@ -35,8 +35,9 @@ include __DIR__ . '/includes/header.php';
         <h1><?php echo htmlspecialchars($pelicula['nombre']); ?></h1>
         <div class="meta">
             <span><strong>Género:</strong> <?php echo htmlspecialchars($pelicula['genero']); ?></span>
+            <span><strong>Director:</strong> <?php echo htmlspecialchars($pelicula['director'] ?? 'N/A'); ?></span>
             <span><strong>Duración:</strong> <?php echo htmlspecialchars($pelicula['duracion']); ?> min</span>
-            <span><strong>Estreno:</strong> <?php echo htmlspecialchars($pelicula['fecha-estreno']); ?></span>
+            <span><strong>Estreno:</strong> <?php echo htmlspecialchars($pelicula['fecha_estreno']); ?></span>
         </div>
         <p class="descripcion"><?php echo htmlspecialchars($pelicula['descripcion']); ?></p>
     </div>
