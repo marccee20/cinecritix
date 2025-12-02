@@ -6,19 +6,26 @@
 }
 
 body{
+    min-height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../imagenes/fondolog.jpg) center/cover no-repeat fixed;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.cuenta-container {
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../imagenes/fondolog.jpg) center/cover no-repeat fixed;
-    padding-top: 100px;  
-    background-size: cover;
-    background-position: center;
+    padding: 20px;
+    padding-top: 100px;
 }
 
 .navbar {
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.6);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -156,4 +163,10 @@ body{
 
 .register-link p a:hover {
     text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    width: 100%;
+    margin-top: auto;
 }

@@ -5,28 +5,11 @@
  */
 session_start();
 include("conexion.php");
-
-// Manejar eliminación antes de cualquier otro POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
-    $del_id = (int)$_POST['delete_id'];
-    if ($del_id > 0) {
-        $d = $conexion->prepare("DELETE FROM peliculas WHERE id_peliculas = ?");
-        $d->bind_param('i', $del_id);
-        if ($d->execute()) {
-            $d->close();
-            header('Location: admin.php');
-            exit;
-        } else {
-            $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error al eliminar: ' . htmlspecialchars($d->error) . '</div>';
-            $d->close();
-        }
-    }
-}
+$no_banner = true;
 
 // Procesar formulario
 $mensaje = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_pelicula = isset($_POST['id_peliculas']) ? (int)$_POST['id_peliculas'] : 0;
     $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
     $genero = isset($_POST['genero']) ? trim($_POST['genero']) : '';
     $duracion = isset($_POST['duracion']) ? (int)$_POST['duracion'] : 0;
@@ -36,121 +19,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pais = isset($_POST['pais']) ? trim($_POST['pais']) : '';
     $idioma = isset($_POST['idioma']) ? trim($_POST['idioma']) : '';
 
-    // Procesar imagen (si se sube una nueva)
+    // Procesar imagen
     $imagen_blob = null;
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
         $imagen_blob = file_get_contents($_FILES['imagen']['tmp_name']);
     }
 
-    // Si viene id_peliculas > 0 -> actualizar, si no -> insertar
-    if ($id_pelicula > 0) {
-        // Si no subieron una nueva imagen, recuperar la existente
-        if ($imagen_blob === null) {
-            $q = $conexion->prepare("SELECT imagen FROM peliculas WHERE id_peliculas = ? LIMIT 1");
-            $q->bind_param('i', $id_pelicula);
-            $q->execute();
-            $q->bind_result($existing_img);
-            if ($q->fetch()) {
-                $imagen_blob = $existing_img;
-            } else {
-                $imagen_blob = null;
-            }
-            $q->close();
-        }
-
-        if (!empty($nombre)) {
-            $stmt = $conexion->prepare(
-                "UPDATE peliculas SET nombre = ?, genero = ?, duracion = ?, fecha_estreno = ?, descripcion = ?, director = ?, imagen = ?, pais = ?, idioma = ? WHERE id_peliculas = ?"
-            );
-            if ($stmt) {
-                $stmt->bind_param(
-                    'ssissssssi',
-                    $nombre,
-                    $genero,
-                    $duracion,
-                    $fecha_estreno,
-                    $descripcion,
-                    $director,
-                    $imagen_blob,
-                    $pais,
-                    $idioma,
-                    $id_pelicula
-                );
-
-                if ($stmt->execute()) {
-                    $mensaje = '<div style="padding:10px; background:#d4edda; color:#155724; border-radius:4px; margin-bottom:20px;">&#10003; Película actualizada correctamente</div>';
-                } else {
-                    $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error al actualizar: ' . htmlspecialchars($stmt->error) . '</div>';
-                }
-                $stmt->close();
-            }
+    if (!empty($nombre) && $imagen_blob) {
+        $stmt = $conexion->prepare(
+            "INSERT INTO peliculas (nombre, genero, duracion, `fecha_estreno`, descripcion, director, imagen, pais, idioma) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        );
+        
+        $stmt->bind_param(
+            'ssissssss',
+            $nombre,
+            $genero,
+            $duracion,
+            $fecha_estreno,
+            $descripcion,
+            $director,
+            $imagen_blob,
+            $pais,
+            $idioma
+        );
+        
+        if ($stmt->execute()) {
+            $mensaje = '<div style="padding:10px; background:#d4edda; color:#155724; border-radius:4px; margin-bottom:20px;">&#10003; Película agregada exitosamente</div>';
         } else {
-            $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; El nombre no puede estar vacío</div>';
+            $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error: ' . htmlspecialchars($stmt->error) . '</div>';
         }
+        $stmt->close();
     } else {
-        // Insert
-        if (!empty($nombre) && $imagen_blob) {
-            $stmt = $conexion->prepare(
-                "INSERT INTO peliculas (nombre, genero, duracion, fecha_estreno, descripcion, director, imagen, pais, idioma) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            );
-            
-            $stmt->bind_param(
-                'ssissssss',
-                $nombre,
-                $genero,
-                $duracion,
-                $fecha_estreno,
-                $descripcion,
-                $director,
-                $imagen_blob,
-                $pais,
-                $idioma
-            );
-            
-            if ($stmt->execute()) {
-                $mensaje = '<div style="padding:10px; background:#d4edda; color:#155724; border-radius:4px; margin-bottom:20px;">&#10003; Película agregada exitosamente</div>';
-            } else {
-                $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error: ' . htmlspecialchars($stmt->error) . '</div>';
-            }
-            $stmt->close();
-        } else {
-            $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Completa todos los campos (nombre, descripción e imagen)</div>';
-        }
+        $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Completa todos los campos (nombre, descripción e imagen)</div>';
     }
 }
 
 // Obtener lista de películas
-$sql = "SELECT id_peliculas, nombre, genero, duracion, director FROM peliculas ORDER BY nombre";
+$sql = "SELECT id_peliculas, nombre, genero, duracion FROM peliculas ORDER BY nombre";
 $resultado = $conexion->query($sql);
 $peliculas = $resultado->fetch_all(MYSQLI_ASSOC);
-
-// Preparar valores para el formulario (edición)
-$form = [
-    'id_peliculas' => 0,
-    'nombre' => '',
-    'genero' => '',
-    'director' => '',
-    'duracion' => '',
-    'fecha_estreno' => '',
-    'pais' => '',
-    'idioma' => '',
-    'descripcion' => ''
-];
-
-if (isset($_GET['edit'])) {
-    $edit_id = (int)$_GET['edit'];
-    if ($edit_id > 0) {
-        $q = $conexion->prepare("SELECT id_peliculas, nombre, genero, director, duracion, fecha_estreno, pais, idioma, descripcion FROM peliculas WHERE id_peliculas = ? LIMIT 1");
-        $q->bind_param('i', $edit_id);
-        $q->execute();
-        $res = $q->get_result();
-        if ($res && $res->num_rows > 0) {
-            $form = $res->fetch_assoc();
-        }
-        $q->close();
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -219,12 +127,11 @@ if (isset($_GET['edit'])) {
         </div>
         
         <div class="form-section">
-            <h2><?php echo $form['id_peliculas'] ? 'Editar Película' : 'Agregar Nueva Película'; ?></h2>
+            <h2>Agregar Nueva Película</h2>
             <form method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="id_peliculas" value="<?php echo (int)$form['id_peliculas']; ?>">
                 <div class="form-group">
                     <label>Nombre de la película *</label>
-                    <input type="text" name="nombre" required value="<?php echo htmlspecialchars($form['nombre']); ?>">
+                    <input type="text" name="nombre" required>
                 </div>
                 
                 <div class="form-group">
@@ -234,40 +141,40 @@ if (isset($_GET['edit'])) {
                 
                 <div class="form-group">
                     <label>Director</label>
-                    <input type="text" name="director" placeholder="Nombre del director" value="<?php echo htmlspecialchars($form['director']); ?>">
+                    <input type="text" name="director" placeholder="Nombre del director">
                 </div>
                 
                 <div class="form-group">
                     <label>Duración (minutos)</label>
-                    <input type="number" name="duracion" min="0" value="<?php echo htmlspecialchars($form['duracion']); ?>">
+                    <input type="number" name="duracion" min="0">
                 </div>
                 
                 <div class="form-group">
                     <label>Fecha de estreno</label>
-                    <input type="date" name="fecha_estreno" value="<?php echo htmlspecialchars($form['fecha_estreno']); ?>">
+                    <input type="date" name="fecha_estreno">
                 </div>
                 
                 <div class="form-group">
                     <label>País</label>
-                    <input type="text" name="pais" placeholder="Ej: USA, México" value="<?php echo htmlspecialchars($form['pais']); ?>">
+                    <input type="text" name="pais" placeholder="Ej: USA, México">
                 </div>
                 
                 <div class="form-group">
                     <label>Idioma</label>
-                    <input type="text" name="idioma" placeholder="Ej: Español, Inglés" value="<?php echo htmlspecialchars($form['idioma']); ?>">
+                    <input type="text" name="idioma" placeholder="Ej: Español, Inglés">
                 </div>
                 
                 <div class="form-group">
                     <label>Descripción</label>
-                    <textarea name="descripcion" placeholder="Breve descripción de la película..."><?php echo htmlspecialchars($form['descripcion']); ?></textarea>
+                    <textarea name="descripcion" placeholder="Breve descripción de la película..."></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label>Imagen (JPG, PNG, WebP) <?php echo $form['id_peliculas'] ? '(dejar en blanco para mantener la actual)' : '*'; ?></label>
-                    <input type="file" name="imagen" accept="image/*" <?php echo $form['id_peliculas'] ? '' : 'required'; ?>>
+                    <label>Imagen (JPG, PNG, WebP) *</label>
+                    <input type="file" name="imagen" accept="image/*" required>
                 </div>
                 
-                <button type="submit"><?php echo $form['id_peliculas'] ? 'Guardar cambios' : 'Agregar Película'; ?></button>
+                <button type="submit">Agregar Película</button>
             </form>
         </div>
         
@@ -280,7 +187,6 @@ if (isset($_GET['edit'])) {
                         <tr>
                             <th>ID</th>
                             <th>Nombre</th>
-                            <th>Director</th>
                             <th>Género</th>
                             <th>Duración</th>
                             <th>Acciones</th>
@@ -291,16 +197,10 @@ if (isset($_GET['edit'])) {
                             <tr>
                                 <td><?php echo $peli['id_peliculas']; ?></td>
                                 <td><?php echo htmlspecialchars($peli['nombre']); ?></td>
-                                <td><?php echo htmlspecialchars($peli['director'] ?? 'N/A'); ?></td>
                                 <td><?php echo htmlspecialchars($peli['genero'] ?? 'N/A'); ?></td>
                                 <td><?php echo $peli['duracion'] ? $peli['duracion'] . ' min' : 'N/A'; ?></td>
                                 <td>
-                                    <a href="info.php?id=<?php echo $peli['id_peliculas']; ?>" style="color: #007bff; margin-right:8px;">Ver</a>
-                                    <a href="admin.php?edit=<?php echo $peli['id_peliculas']; ?>" style="color: #28a745; margin-right:8px;">Editar</a>
-                                    <form method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar esta película? Esta acción no se puede deshacer.');">
-                                        <input type="hidden" name="delete_id" value="<?php echo $peli['id_peliculas']; ?>">
-                                        <button type="submit" class="btn-delete">Eliminar</button>
-                                    </form>
+                                    <a href="info.php?id=<?php echo $peli['id_peliculas']; ?>" style="color: #007bff;">Ver</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
