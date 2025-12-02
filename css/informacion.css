@@ -130,6 +130,17 @@ body {
   cursor: pointer;
 }
 
+/* Botón favorito */
+.btn-fav{
+  background: #ff0040;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
 .lista-comentarios .comentario {
   background: #1a1a1a;
   margin-top: 15px;

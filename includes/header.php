@@ -4,6 +4,26 @@ if (session_status() == PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/../conexion.php';
 // `$search_value` puede venir de la página que incluye este header
 $search_value = isset($search_value) ? $search_value : '';
+// Por defecto no mostrar el banner grande salvo que la página lo solicite explícitamente
+if (!isset($show_banner)) {
+    $show_banner = false;
+}
+// Por defecto renderizar el bloque visual <header> (navbar/banner)
+// El banner interno seguirá estando controlado por $show_banner
+if (!isset($render_header)) {
+  $render_header = true;
+}
+// Helper: obtener URL de avatar (busca archivos en imagenes/avatars/{id}.{ext})
+function avatar_url($id) {
+  $baseDir = __DIR__ . '/../imagenes/avatars/';
+  $webBase = 'imagenes/avatars/';
+  $exts = ['png','jpg','jpeg','webp','gif'];
+  foreach ($exts as $e) {
+    $f = $baseDir . $id . '.' . $e;
+    if (file_exists($f)) return $webBase . $id . '.' . $e;
+  }
+  return false;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -28,7 +48,14 @@ $search_value = isset($search_value) ? $search_value : '';
           <a href="index.php" class="navbar-brand">cinecritx</a>
           <div class="navbar-nav">
             <?php if (isset($_SESSION['usuario'])): ?>
-              <a href=""><?php echo htmlspecialchars($_SESSION['usuario']); ?></a>
+              <?php $avatar = avatar_url($_SESSION['id_usuarios'] ?? 0); ?>
+              <!-- Nombre y avatar juntos: el avatar se muestra A LA DERECHA del nombre -->
+              <a href="perfil.php" class="avatar-link">
+                <span class="nav-username"><?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
+                <?php if ($avatar): ?>
+                  <img src="<?php echo htmlspecialchars($avatar); ?>" alt="Avatar" class="user-avatar" />
+                <?php endif; ?>
+              </a>
               <a href="logout.php">Cerrar sesión</a>
               <a href="#peliculas">Películas</a>
             <?php else: ?>
@@ -40,19 +67,5 @@ $search_value = isset($search_value) ? $search_value : '';
         </div>
       </nav>
 
-      <div class="banner">
-        <div class="container">
-          <h1 class="banner-title">cinecritx</h1>
-          <p>siempre hay algo nuevo para ver</p>
-          <form action="buscar.php" method="GET" id="search-form">
-            <div class="search-container">
-              <input type="text" class="search-input" id="search-input" name="q" placeholder="buscar..." autocomplete="off" value="<?php echo htmlspecialchars($search_value); ?>">
-              <div id="suggestions-list" class="suggestions-list"></div>
-            </div>
-            <button type="submit" class="search-btn">
-              <i class="fas fa-search"></i>
-            </button>
-          </form>
-        </div>
-      </div>
+    
     </header>

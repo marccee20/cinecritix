@@ -39,6 +39,8 @@ if (isset($_POST['btningresar'])) {
 $search_value = '';
 $page_title = 'Inicio de sesión';
 $extra_head = '<link rel="stylesheet" href="css/login.css">\n<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">';
+// Asegurar que el banner grande esté desactivado en páginas internas
+$show_banner = false;
 include __DIR__ . '/includes/header.php';
 ?>
 

@@ -1,57 +1,16 @@
-<?php 
+<?php
 session_start();
 include("conexion.php");
+
+// Usar el header compartido que ya incluye la navbar (muestra avatar y link a perfil)
+$search_value = '';
+$page_title = 'cinecritx';
+// Mostrar banner grande en la página principal
+$show_banner = true;
+// Mostrar el header (navbar + banner) en la página principal
+$render_header = true;
+include __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>cinecritx</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-
-    <!-- header -->
-    <header>
-      <nav class="navbar">
-        <div class="container">
-          <a href="index.php" class="navbar-brand">cinecritx</a>
-          <div class="navbar-nav">
-            <?php if (isset($_SESSION['usuario'])): ?>
-              <!-- Si el usuario está logueado -->
-              <a href=""><?php echo htmlspecialchars($_SESSION['usuario']); ?></a>
-              <a href="logout.php">Cerrar sesión</a>
-              <a href="#peliculas">Películas</a>
-            <?php else: ?>
-              <!-- Si el usuario NO está logueado -->
-              <a href="login.php">Iniciar sesión</a>
-              <a href="cuenta.php">Crear cuenta</a>
-              <a href="#peliculas">Películas</a>
-            <?php endif; ?>
-          </div>
-        </div>
-      </nav>
-
-      <div class="banner">
-        <div class="container">
-          <h1 class="banner-title">cinecritx</h1>
-          <p>siempre hay algo nuevo para ver</p>
-          <form action="buscar.php" method="GET" id="search-form">
-            <div class="search-container">
-              <input type="text" class="search-input" id="search-input" name="q" placeholder="buscar..." autocomplete="off">
-              <div id="suggestions-list" class="suggestions-list"></div>
-            </div>
-            <button type="submit" class="search-btn">
-              <i class="fas fa-search"></i>
-            </button>
-          </form>
-        </div>
-      </div>
-    </header>
 
     <!-- películas -->
     <div class="title">

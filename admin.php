@@ -1,10 +1,30 @@
 <?php
 /**
  * Panel de administración simple
+<?php
+/**
+<?php
+/**
+ * Panel de administración simple
  * Para agregar nuevas películas a la base de datos
  */
 session_start();
 include("conexion.php");
+
+// Helper: comprobar si una columna existe en la tabla peliculas
+function column_exists($conexion, $table, $column) {
+    $t = $conexion->real_escape_string($table);
+    $c = $conexion->real_escape_string($column);
+    $res = $conexion->query("SHOW COLUMNS FROM `{$t}` LIKE '{$c}'");
+    return ($res && $res->num_rows > 0);
+}
+
+$hasDirector = column_exists($conexion, 'peliculas', 'director');
+// Detectar otras columnas que usamos en el formulario
+$hasFecha = column_exists($conexion, 'peliculas', 'fecha_estreno');
+$hasPais = column_exists($conexion, 'peliculas', 'pais');
+$hasIdioma = column_exists($conexion, 'peliculas', 'idioma');
+$hasImagen = column_exists($conexion, 'peliculas', 'imagen');
 
 // Manejar eliminación antes de cualquier otro POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
@@ -44,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Si viene id_peliculas > 0 -> actualizar, si no -> insertar
     if ($id_pelicula > 0) {
-        // Si no subieron una nueva imagen, recuperar la existente
-        if ($imagen_blob === null) {
+        // Si no subieron una nueva imagen, recuperar la existente (si existe columna imagen)
+        if ($imagen_blob === null && $hasImagen) {
             $q = $conexion->prepare("SELECT imagen FROM peliculas WHERE id_peliculas = ? LIMIT 1");
             $q->bind_param('i', $id_pelicula);
             $q->execute();
@@ -59,23 +79,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!empty($nombre)) {
-            $stmt = $conexion->prepare(
-                "UPDATE peliculas SET nombre = ?, genero = ?, duracion = ?, fecha_estreno = ?, descripcion = ?, director = ?, imagen = ?, pais = ?, idioma = ? WHERE id_peliculas = ?"
-            );
+            // Preparar UPDATE según columnas disponibles
+
+            // Build dynamic update: list fields in order and bind
+            $updateFields = ['nombre','genero','duracion'];
+            if ($hasFecha) $updateFields[] = 'fecha_estreno';
+            if ($hasDirector) $updateFields[] = 'director';
+            if ($hasImagen) $updateFields[] = 'imagen';
+            if ($hasPais) $updateFields[] = 'pais';
+            if ($hasIdioma) $updateFields[] = 'idioma';
+            $updateFields[] = 'descripcion';
+
+            $setParts = [];
+            $types = '';
+            $values = [];
+            foreach ($updateFields as $f) {
+                $setParts[] = "$f = ?";
+                if ($f === 'duracion') { $types .= 'i'; $values[] = $duracion; }
+                elseif ($f === 'imagen') { $types .= 's'; $values[] = $imagen_blob; }
+                else { $types .= 's'; $values[] = ${$f}; }
+            }
+
+            $sqlUpdate = "UPDATE peliculas SET " . implode(', ', $setParts) . " WHERE id_peliculas = ?";
+            $stmt = $conexion->prepare($sqlUpdate);
             if ($stmt) {
-                $stmt->bind_param(
-                    'ssissssssi',
-                    $nombre,
-                    $genero,
-                    $duracion,
-                    $fecha_estreno,
-                    $descripcion,
-                    $director,
-                    $imagen_blob,
-                    $pais,
-                    $idioma,
-                    $id_pelicula
-                );
+                $types .= 'i';
+                $values[] = $id_pelicula;
+                $bind = [];
+                $bind[] = & $types;
+                for ($i=0;$i<count($values);$i++) $bind[] = & $values[$i];
+                call_user_func_array([$stmt, 'bind_param'], $bind);
 
                 if ($stmt->execute()) {
                     $mensaje = '<div style="padding:10px; background:#d4edda; color:#155724; border-radius:4px; margin-bottom:20px;">&#10003; Película actualizada correctamente</div>';
@@ -83,47 +116,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error al actualizar: ' . htmlspecialchars($stmt->error) . '</div>';
                 }
                 $stmt->close();
+            } else {
+                $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error preparando la consulta de actualización</div>';
             }
         } else {
             $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; El nombre no puede estar vacío</div>';
         }
     } else {
         // Insert
-        if (!empty($nombre) && $imagen_blob) {
-            $stmt = $conexion->prepare(
-                "INSERT INTO peliculas (nombre, genero, duracion, fecha_estreno, descripcion, director, imagen, pais, idioma) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-            );
-            
-            $stmt->bind_param(
-                'ssissssss',
-                $nombre,
-                $genero,
-                $duracion,
-                $fecha_estreno,
-                $descripcion,
-                $director,
-                $imagen_blob,
-                $pais,
-                $idioma
-            );
-            
-            if ($stmt->execute()) {
-                $mensaje = '<div style="padding:10px; background:#d4edda; color:#155724; border-radius:4px; margin-bottom:20px;">&#10003; Película agregada exitosamente</div>';
-            } else {
-                $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error: ' . htmlspecialchars($stmt->error) . '</div>';
+        if (!empty($nombre) && ($imagen_blob || !$hasImagen)) {
+            $insertCols = ['nombre','genero','duracion'];
+            if ($hasFecha) $insertCols[] = 'fecha_estreno';
+            if ($hasDirector) $insertCols[] = 'director';
+            if ($hasImagen) $insertCols[] = 'imagen';
+            if ($hasPais) $insertCols[] = 'pais';
+            if ($hasIdioma) $insertCols[] = 'idioma';
+            $insertCols[] = 'descripcion';
+
+            $placeholders = array_fill(0, count($insertCols), '?');
+            $types = '';
+            $values = [];
+            foreach ($insertCols as $c) {
+                if ($c === 'duracion') { $types .= 'i'; $values[] = $duracion; }
+                elseif ($c === 'imagen') { $types .= 's'; $values[] = $imagen_blob; }
+                else { $types .= 's'; $values[] = ${$c}; }
             }
-            $stmt->close();
+
+            $sqlInsert = "INSERT INTO peliculas (" . implode(', ', $insertCols) . ") VALUES (" . implode(', ', $placeholders) . ")";
+            $stmt = $conexion->prepare($sqlInsert);
+            if ($stmt) {
+                $bind = [];
+                $bind[] = & $types;
+                for ($i=0;$i<count($values);$i++) $bind[] = & $values[$i];
+                call_user_func_array([$stmt, 'bind_param'], $bind);
+
+                if ($stmt->execute()) {
+                    $mensaje = '<div style="padding:10px; background:#d4edda; color:#155724; border-radius:4px; margin-bottom:20px;">&#10003; Película agregada exitosamente</div>';
+                } else {
+                    $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error: ' . htmlspecialchars($stmt->error) . '</div>';
+                }
+                $stmt->close();
+            } else {
+                $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Error preparando la consulta</div>';
+            }
         } else {
             $mensaje = '<div style="padding:10px; background:#f8d7da; color:#721c24; border-radius:4px; margin-bottom:20px;">&#10007; Completa todos los campos (nombre, descripción e imagen)</div>';
         }
     }
 }
 
-// Obtener lista de películas
-$sql = "SELECT id_peliculas, nombre, genero, duracion, director FROM peliculas ORDER BY nombre";
+// Obtener lista de películas (adaptar si no existe columna director)
+if ($hasDirector) {
+    $sql = "SELECT id_peliculas, nombre, genero, duracion, director FROM peliculas ORDER BY nombre";
+} else {
+    $sql = "SELECT id_peliculas, nombre, genero, duracion FROM peliculas ORDER BY nombre";
+}
 $resultado = $conexion->query($sql);
-$peliculas = $resultado->fetch_all(MYSQLI_ASSOC);
+$peliculas = $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
 
 // Preparar valores para el formulario (edición)
 $form = [
@@ -141,12 +190,23 @@ $form = [
 if (isset($_GET['edit'])) {
     $edit_id = (int)$_GET['edit'];
     if ($edit_id > 0) {
-        $q = $conexion->prepare("SELECT id_peliculas, nombre, genero, director, duracion, fecha_estreno, pais, idioma, descripcion FROM peliculas WHERE id_peliculas = ? LIMIT 1");
+        // Elegir columnas según disponibilidad
+        $selectColsArr = ['id_peliculas','nombre','genero','duracion'];
+        if ($hasDirector) $selectColsArr[] = 'director';
+        if ($hasFecha) $selectColsArr[] = 'fecha_estreno';
+        if ($hasPais) $selectColsArr[] = 'pais';
+        if ($hasIdioma) $selectColsArr[] = 'idioma';
+        $selectColsArr[] = 'descripcion';
+        $selectCols = implode(', ', $selectColsArr);
+
+        $q = $conexion->prepare("SELECT {$selectCols} FROM peliculas WHERE id_peliculas = ? LIMIT 1");
         $q->bind_param('i', $edit_id);
         $q->execute();
         $res = $q->get_result();
         if ($res && $res->num_rows > 0) {
             $form = $res->fetch_assoc();
+            // Asegurar que la llave director exista en el array para evitar notices
+            if (!isset($form['director'])) $form['director'] = '';
         }
         $q->close();
     }
@@ -313,3 +373,4 @@ if (isset($_GET['edit'])) {
     </div>
 </body>
 </html>
+

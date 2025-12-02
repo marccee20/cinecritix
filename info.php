@@ -1,5 +1,5 @@
-session_start(); // Para identificar usuario logueado
 <?php
+session_start(); // Para identificar usuario logueado
 // Conexión y obtención de datos
 require_once __DIR__ . '/conexion.php';
 
@@ -21,7 +21,24 @@ if (isset($_GET['id'])) {
 $search_value = '';
 $page_title = isset($pelicula['nombre']) ? $pelicula['nombre'] : 'Información';
 $extra_head = '<link rel="stylesheet" href="css/informacion.css?v=6">\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" crossorigin="anonymous" />';
+// Asegurar que el banner grande esté desactivado en páginas internas
+$show_banner = false;
 include __DIR__ . '/includes/header.php';
+?>
+
+<?php
+// Comprobar si esta película está en favoritos del usuario
+$is_fav = false;
+if (isset($_SESSION['id_usuarios'])) {
+    $fav_stmt = $conexion->prepare("SELECT id_favorito FROM favoritos WHERE id_usuarios = ? AND id_peliculas = ?");
+    if ($fav_stmt) {
+        $fav_stmt->bind_param('ii', $_SESSION['id_usuarios'], $pelicula['id_peliculas']);
+        $fav_stmt->execute();
+        $fav_stmt->store_result();
+        if ($fav_stmt->num_rows > 0) $is_fav = true;
+        $fav_stmt->close();
+    }
+}
 ?>
 
 <!-- info peli -->
@@ -40,6 +57,12 @@ include __DIR__ . '/includes/header.php';
             <span><strong>Estreno:</strong> <?php echo htmlspecialchars($pelicula['fecha_estreno']); ?></span>
         </div>
         <p class="descripcion"><?php echo htmlspecialchars($pelicula['descripcion']); ?></p>
+        <?php if (isset($_SESSION['id_usuarios'])): ?>
+            <form method="POST" action="toggle_favorito.php" style="margin-top:12px;">
+                <input type="hidden" name="id_peliculas" value="<?php echo intval($pelicula['id_peliculas']); ?>">
+                <button type="submit" class="btn-fav"><?php echo $is_fav ? 'Quitar de favoritos' : 'Agregar a favoritos'; ?></button>
+            </form>
+        <?php endif; ?>
     </div>
 </div>
 

@@ -17,6 +17,7 @@ $id_comentario_padre = isset($_POST['id_comentario_padre']) ? intval($_POST['id_
 
 
 if ($puntuacion !== null) {
+    
     $check = $conexion->prepare("SELECT id_valoracion FROM valoraciones WHERE id_usuarios = ? AND id_peliculas = ?");
     $check->bind_param("ii", $id_usuario, $id_pelicula);
     $check->execute();
