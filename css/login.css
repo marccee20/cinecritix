@@ -6,19 +6,27 @@
 }
 
 body{
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../imagenes/fondolog.jpg) center/cover no-repeat fixed;
     background-size: cover;
     background-position: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    padding-top: 100px;
 }
 
 /* ====== NAVBAR ====== */
 .navbar {
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.6);
     color: white;
     display: flex;
     justify-content: space-between;
@@ -61,10 +69,6 @@ body{
 
 /* Para que el formulario no quede tapado por el nav fijo */
 .wrapper {
-    margin-top: 100px;
-}
-
-.wrapper {
     width: 420px;
     background: transparent;
     border: 2px solid rgba(255,255,255,.2);
@@ -72,7 +76,6 @@ body{
     color: #fff;
     border-radius: 10px;
     padding: 30px 40px;
-
 }
 
 .wrapper h1 {
@@ -162,4 +165,10 @@ body{
 
 .register-link p a:hover {
     text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    width: 100%;
+    margin-top: auto;
 }

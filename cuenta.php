@@ -38,11 +38,13 @@ if (isset($_POST['btncrear'])) {
 
 $search_value = '';
 $page_title = 'Crear cuenta';
-$extra_head = '<link rel="stylesheet" href="css/cuenta.css">\n<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">';
+$no_banner = true;
+$extra_head = '<link rel="stylesheet" href="css/cuenta.css">\n<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">\n<style>header{background:none!important;background-image:none!important;min-height:auto!important;}</style>';
 include __DIR__ . '/includes/header.php';
 ?>
 
-    <div class="wrapper">
+    <div class="cuenta-container">
+        <div class="wrapper">
         <form method="POST">
             <h1>Crear cuenta</h1>
 
@@ -73,6 +75,7 @@ include __DIR__ . '/includes/header.php';
                 <p>¿Ya tienes una cuenta? <a href="login.php">Iniciar sesión</a></p>
             </div>
         </form>
+        </div>
     </div>
 
 <?php include __DIR__ . '/includes/footer.php'; ?>

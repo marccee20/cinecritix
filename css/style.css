@@ -34,9 +34,17 @@ header{
     flex-direction: column;
     justify-content: stretch;
 }
+header.no-banner{
+    min-height: auto !important;
+    background: none !important;
+    background-image: none !important;
+    background-color: transparent !important;
+    justify-content: initial !important;
+}
 .navbar{
     background: rgba(0, 0, 0, 0.6);
     padding: 19.2px;
+    backdrop-filter: blur(6px);
 }
 .navbar-brand{
     color: #fff;
@@ -287,10 +295,11 @@ header{
 
 
 footer{
-    background: var(--exDark);
+    background: rgba(0, 0, 0, 0.6);
     color: #fff;
     text-align: center;
     padding: 32px 0;
+    backdrop-filter: blur(6px);
 }
 .social-links{
     display: flex;
