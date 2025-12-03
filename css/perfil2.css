@@ -1,0 +1,201 @@
+/* Estilos para la página de perfil - diseño oscuro similar a info.php */
+
+body {
+  margin: 0;
+  font-family: var(--Quicksand);
+  background-color: #0d0d0d !important;
+  color: #e5e5e5;
+}
+
+.perfil-container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 0;
+  background-color: #0d0d0d !important;
+}
+
+/* Header del perfil */
+.perfil-header {
+  display: flex !important;
+  gap: 40px !important;
+  align-items: flex-start !important;
+  padding: 40px !important;
+  background: linear-gradient(145deg, #121212, #1a1a1a) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1) !important;
+  margin-bottom: 30px !important;
+}
+
+.avatar-box {
+  width: 150px !important;
+  height: 150px !important;
+  flex-shrink: 0 !important;
+}
+
+.perfil-avatar {
+  width: 150px !important;
+  height: 150px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  border: 4px solid #fff !important;
+  box-shadow: 0 0 25px rgba(226, 233, 229, 0.863) !important;
+}
+
+.perfil-avatar--placeholder {
+  width: 150px !important;
+  height: 150px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  background: linear-gradient(145deg, #1a1a1a, #222) !important;
+  color: #fff !important;
+  font-size: 60px !important;
+  font-weight: 700 !important;
+  border: 4px solid #555 !important;
+}
+
+.perfil-info {
+  flex: 1 !important;
+}
+
+.perfil-info h2 {
+  margin: 0 0 10px 0 !important;
+  font-size: 2rem !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.perfil-info p {
+  color: #bbb !important;
+  font-size: 1rem !important;
+  margin: 5px 0 !important;
+}
+
+.form-avatar {
+  margin-top: 15px !important;
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+.form-avatar label {
+  color: #e5e5e5 !important;
+  font-weight: 500 !important;
+}
+
+.form-avatar input[type="file"] {
+  background: #222 !important;
+  color: #fff !important;
+  border: 1px solid #444 !important;
+  padding: 8px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-size: 0.9rem !important;
+}
+
+.form-avatar button {
+  background: #ff0040 !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 10px 16px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  transition: background 0.3s ease !important;
+}
+
+.form-avatar button:hover {
+  background: #ff1955 !important;
+}
+
+/* Secciones del perfil */
+.perfil-seccion {
+  margin-top: 30px !important;
+  background: #111 !important;
+  padding: 25px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1) !important;
+}
+
+.perfil-seccion h3 {
+  margin: 0 0 15px 0 !important;
+  font-size: 1.4rem !important;
+  color: #fff !important;
+  border-bottom: 1px solid #333 !important;
+  padding-bottom: 10px !important;
+}
+
+/* Listas */
+.lista-favoritos,
+.lista-valoraciones,
+.lista-comentarios {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.lista-favoritos li,
+.lista-valoraciones li,
+.lista-comentarios li {
+  padding: 12px !important;
+  border-bottom: 1px solid #222 !important;
+  background: #1a1a1a !important;
+  margin-bottom: 8px !important;
+  border-radius: 6px !important;
+  transition: background 0.3s ease !important;
+  color: #ddd !important;
+}
+
+.lista-favoritos li:hover,
+.lista-valoraciones li:hover,
+.lista-comentarios li:hover {
+  background: #222 !important;
+}
+
+.lista-favoritos li a,
+.lista-valoraciones li a,
+.lista-comentarios li a {
+  color: #fff !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+}
+
+.lista-favoritos li a:hover,
+.lista-valoraciones li a:hover,
+.lista-comentarios li a:hover {
+  color: #ff0040 !important;
+}
+
+.puntuacion {
+  margin-left: 8px !important;
+  font-weight: 700 !important;
+  color: #ff0040 !important;
+}
+
+.fecha {
+  color: #aaa !important;
+  font-size: 0.85rem !important;
+  display: block !important;
+  margin-top: 5px !important;
+}
+
+.comentario-text {
+  margin: 6px 0 !important;
+  color: #ddd !important;
+}
+
+.muted {
+  color: #aaa !important;
+  font-size: 0.9rem !important;
+  text-align: center !important;
+  padding: 20px !important;
+}
+
+.sin-comentarios {
+  color: #ccc !important;
+  font-style: italic !important;
+  text-align: center !important;
+  padding: 20px !important;
+}

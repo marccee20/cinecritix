@@ -1,5 +1,5 @@
-session_start(); // Para identificar usuario logueado
 <?php
+session_start(); // Para identificar usuario logueado
 // Conexión y obtención de datos
 require_once __DIR__ . '/conexion.php';
 
@@ -43,6 +43,32 @@ include __DIR__ . '/includes/header.php';
             <span><strong>Estreno:</strong> <?php echo htmlspecialchars($pelicula['fecha_estreno']); ?></span>
         </div>
         <p class="descripcion"><?php echo htmlspecialchars($pelicula['descripcion']); ?></p>
+        
+        <?php
+        // Comprobar si la película está en favoritos del usuario logueado
+        $is_fav = false;
+        if (isset($_SESSION['id_usuarios'])) {
+            $fav_stmt = $conexion->prepare("SELECT id_favorito FROM favoritos WHERE id_usuarios = ? AND id_peliculas = ?");
+            if ($fav_stmt) {
+                $fav_stmt->bind_param('ii', $_SESSION['id_usuarios'], $pelicula['id_peliculas']);
+                $fav_stmt->execute();
+                $fav_stmt->store_result();
+                if ($fav_stmt->num_rows > 0) $is_fav = true;
+                $fav_stmt->close();
+            }
+        }
+        ?>
+        
+        <?php if (isset($_SESSION['id_usuarios'])): ?>
+            <form method="POST" action="toggle_favorito.php" style="margin-top:16px; display:inline;">
+                <input type="hidden" name="id_peliculas" value="<?php echo intval($pelicula['id_peliculas']); ?>">
+                <button type="submit" class="btn-fav">
+                    <?php echo $is_fav ? '❤️ Quitar de favoritos' : '🤍 Agregar a favoritos'; ?>
+                </button>
+            </form>
+        <?php else: ?>
+            <p style="margin-top:16px; color:#ff0040; font-weight:bold;"><i class="fas fa-lock"></i> Inicia sesión para marcar como favorito</p>
+        <?php endif; ?>
     </div>
 </div>
 
