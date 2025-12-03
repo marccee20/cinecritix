@@ -1,75 +1,9 @@
 <?php 
-session_start();
-include("conexion.php");
-
-// Helper: obtener URL de avatar (busca archivos en imagenes/avatars/{id}.{ext})
-function avatar_url($id) {
-  $baseDir = __DIR__ . '/imagenes/avatars/';
-  $webBase = 'imagenes/avatars/';
-  $exts = ['png','jpg','jpeg','webp','gif'];
-  foreach ($exts as $e) {
-    $f = $baseDir . $id . '.' . $e;
-    if (file_exists($f)) return $webBase . $id . '.' . $e;
-  }
-  return false;
-}
+$search_value = '';
+$page_title = 'cinecritx';
+$show_banner = true;
+include __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>cinecritx</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-
-    <!-- header -->
-    <header>
-      <nav class="navbar">
-        <div class="container">
-          <a href="index.php" class="navbar-brand">cinecritx</a>
-          <div class="navbar-nav">
-            <?php if (isset($_SESSION['usuario'])): ?>
-              <!-- Si el usuario está logueado -->
-              <?php $avatar = avatar_url($_SESSION['id_usuarios'] ?? 0); ?>
-              <a href="perfil2.php" class="avatar-link">
-                <span class="nav-username"><?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
-                <?php if ($avatar): ?>
-                  <img src="<?php echo htmlspecialchars($avatar); ?>" alt="Avatar" class="user-avatar" />
-                <?php endif; ?>
-              </a>
-              <a href="logout.php">Cerrar sesión</a>
-              <a href="#peliculas">Películas</a>
-            <?php else: ?>
-              <!-- Si el usuario NO está logueado -->
-              <a href="login.php">Iniciar sesión</a>
-              <a href="cuenta.php">Crear cuenta</a>
-              <a href="#peliculas">Películas</a>
-            <?php endif; ?>
-          </div>
-        </div>
-      </nav>
-
-      <div class="banner">
-        <div class="container">
-          <h1 class="banner-title">cinecritx</h1>
-          <p>siempre hay algo nuevo para ver</p>
-          <form action="buscar.php" method="GET" id="search-form">
-            <div class="search-container">
-              <input type="text" class="search-input" id="search-input" name="q" placeholder="buscar..." autocomplete="off">
-              <div id="suggestions-list" class="suggestions-list"></div>
-            </div>
-            <button type="submit" class="search-btn">
-              <i class="fas fa-search"></i>
-            </button>
-          </form>
-        </div>
-      </div>
-    </header>
 
     <!-- películas -->
     <div class="title">
@@ -97,17 +31,6 @@ function avatar_url($id) {
         </div>
       <?php } ?>
     </div>
-
-    <!-- footer -->
-    <footer>
-      <div class="social-links">
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-pinterest"></i></a>
-      </div>
-      <span>cinecritx</span>
-    </footer>
 
     <script>
       const searchInput = document.getElementById('search-input');
@@ -195,5 +118,4 @@ function avatar_url($id) {
       });
     </script>
 
-  </body>
-</html>
+<?php include __DIR__ . '/includes/footer.php'; ?>

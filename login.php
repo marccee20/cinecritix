@@ -39,8 +39,9 @@ if (isset($_POST['btningresar'])) {
 $search_value = '';
 $page_title = 'Inicio de sesión';
 $no_banner = true;
+$show_banner = false;
 $v = time();
-$extra_head = '<link rel="stylesheet" href="css/login.css?v='.$v.'">\n<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">\n<style>header{background:none!important;background-image:none!important;min-height:auto!important;}</style>';
+$extra_head = '<link rel="stylesheet" href="css/login.css?v='.$v.'">\n<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">';
 include __DIR__ . '/includes/header.php';
 ?>
 

@@ -35,7 +35,7 @@ function avatar_url($id) {
     if (isset($extra_head)) echo $extra_head;
     ?>
   </head>
-  <body>
+  <body<?php if (isset($body_style)) echo ' style="' . htmlspecialchars($body_style) . '"'; ?>>
 
     <!-- header -->
     <header class="<?php echo ($show_banner) ? '' : 'no-banner'; ?>">
@@ -52,11 +52,17 @@ function avatar_url($id) {
                 <?php endif; ?>
               </a>
               <a href="logout.php">Cerrar sesión</a>
-              <a href="peliculas.php">Películas</a>
+              <?php 
+                $peliculas_link = (basename($_SERVER['PHP_SELF']) == 'index.php') ? '#peliculas' : 'peliculas.php';
+              ?>
+              <a href="<?php echo $peliculas_link; ?>">Películas</a>
             <?php else: ?>
               <a href="login.php">Iniciar sesión</a>
               <a href="cuenta.php">Crear cuenta</a>
-              <a href="peliculas.php">Películas</a>
+              <?php 
+                $peliculas_link = (basename($_SERVER['PHP_SELF']) == 'index.php') ? '#peliculas' : 'peliculas.php';
+              ?>
+              <a href="<?php echo $peliculas_link; ?>">Películas</a>
             <?php endif; ?>
           </div>
         </div>

@@ -1,5 +1,3 @@
-session_start();
-include("conexion.php");
 <?php
 session_start();
 include("conexion.php");
@@ -22,6 +20,8 @@ if (!empty($termino)) {
 }
 
 $search_value = $termino;
+$page_title = 'Buscar películas';
+$show_banner = false;
 include __DIR__ . '/includes/header.php';
 ?>
 
