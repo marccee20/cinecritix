@@ -20,10 +20,8 @@ if (isset($_GET['id'])) {
 
 $search_value = '';
 $page_title = isset($pelicula['nombre']) ? $pelicula['nombre'] : 'Información';
-$extra_head = '<link rel="stylesheet" href="css/informacion.css?v=6">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" crossorigin="anonymous" />
-<style>header{background:none!important;background-image:none!important;min-height:auto!important;}</style>';
-$no_banner = true;
+$show_banner = false;
+$extra_head = '<link rel="stylesheet" href="css/informacion.css?v=6">';
 include __DIR__ . '/includes/header.php';
 ?>
 

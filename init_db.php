@@ -50,6 +50,8 @@ $sql_tabla = "CREATE TABLE IF NOT EXISTS peliculas (
     imagen LONGBLOB,
     imagen_path VARCHAR(255),
     imagen_thumb VARCHAR(255),
+    pais VARCHAR(100),
+    idioma VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
