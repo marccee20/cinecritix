@@ -1,6 +1,18 @@
 <?php 
 session_start();
 include("conexion.php");
+
+// Helper: obtener URL de avatar (busca archivos en imagenes/avatars/{id}.{ext})
+function avatar_url($id) {
+  $baseDir = __DIR__ . '/imagenes/avatars/';
+  $webBase = 'imagenes/avatars/';
+  $exts = ['png','jpg','jpeg','webp','gif'];
+  foreach ($exts as $e) {
+    $f = $baseDir . $id . '.' . $e;
+    if (file_exists($f)) return $webBase . $id . '.' . $e;
+  }
+  return false;
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,7 +35,13 @@ include("conexion.php");
           <div class="navbar-nav">
             <?php if (isset($_SESSION['usuario'])): ?>
               <!-- Si el usuario está logueado -->
-              <a href=""><?php echo htmlspecialchars($_SESSION['usuario']); ?></a>
+              <?php $avatar = avatar_url($_SESSION['id_usuarios'] ?? 0); ?>
+              <a href="perfil2.php" class="avatar-link">
+                <span class="nav-username"><?php echo htmlspecialchars($_SESSION['usuario']); ?></span>
+                <?php if ($avatar): ?>
+                  <img src="<?php echo htmlspecialchars($avatar); ?>" alt="Avatar" class="user-avatar" />
+                <?php endif; ?>
+              </a>
               <a href="logout.php">Cerrar sesión</a>
               <a href="#peliculas">Películas</a>
             <?php else: ?>

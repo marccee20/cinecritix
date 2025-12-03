@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: var(--Quicksand);
   background-color: #0d0d0d;
   color: #e5e5e5;
 }
@@ -129,6 +129,33 @@ body {
   padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+/* Botón de favoritos */
+.btn-fav {
+  background: linear-gradient(145deg, #ff0040, #ff1955) !important;
+  color: #fff !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(255, 0, 64, 0.3) !important;
+  display: inline-block !important;
+  text-decoration: none !important;
+}
+
+.btn-fav:hover {
+  background: linear-gradient(145deg, #ff1955, #ff0040) !important;
+  box-shadow: 0 6px 16px rgba(255, 0, 64, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn-fav:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 8px rgba(255, 0, 64, 0.3) !important;
 }
 
 .lista-comentarios .comentario {

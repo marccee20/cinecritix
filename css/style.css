@@ -75,6 +75,38 @@ header.no-banner{
     opacity: 0.7;
 }
 
+/* Avatar + usuario en la navbar */
+.avatar-link{
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #fff !important;
+    text-decoration: none !important;
+    padding: 6.4px 1.6px !important;
+    letter-spacing: 3px !important;
+    transition: opacity 0.5s ease !important;
+    white-space: nowrap !important;
+}
+.avatar-link:hover{
+    opacity: 0.7 !important;
+}
+.avatar-link .nav-username{
+    color: #fff !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    font-family: var(--Roboto) !important;
+    letter-spacing: 1px !important;
+    font-weight: 500 !important;
+}
+.avatar-link .user-avatar{
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 2px solid rgba(255,255,255,0.15) !important;
+    flex-shrink: 0 !important;
+}
+
 
 .banner{
     flex: 1;
